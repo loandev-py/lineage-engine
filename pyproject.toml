@@ -1,0 +1,53 @@
+[
+project
+]
+
+name = "lineage-engine"
+version = "0.1.0"
+description = "real-time data lineage engine - portfolio project"
+requires-python = ">=3.11"
+
+# dependencias de produccion: lo que se necesita pa poder correr el project
+dependencies = [
+  "pydantic>=2.0",
+  "networkx>=3.0",
+  "structlog>=24.0",
+]
+
+[
+project.optiomnal-dependencies
+]
+# dependencias de desarrollo: solo para quien trabaja el codigo
+
+dev = [
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+  "ruff>=0.4",
+  "mypy>=1.0",
+]
+
+[
+build-system
+]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[
+tool.ruff
+]
+select = ["E","F","I","UP"]
+
+[
+tool.mypy
+]
+python_version + "3.11"
+strict = true
+ignore_missing_imports = true
+
+[
+tool.pytest.ini_options
+]
+testpaths = ["tests"]
+addopts = "--cov+src/lineage-engine --cov-report=term-missing"
+
+
