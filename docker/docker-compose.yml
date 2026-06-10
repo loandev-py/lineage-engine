@@ -1,0 +1,33 @@
+# La versión del formato de docker-compose
+services:
+
+  # ─── Servicio 1: Neo4j (base de datos de grafos) ───────────────────────────
+  neo4j:
+    image: neo4j:5.18-community          # Imagen oficial, versión fijada
+    container_name: lineage-neo4j
+    ports:
+      - "7474:7474"   # Puerto del navegador web (Neo4j Browser)
+      - "7687:7687"   # Puerto del driver Bolt (conexión desde Python)
+    environment:
+      NEO4J_AUTH: neo4j/lineage_password  # usuario:contraseña
+      NEO4J_PLUGINS: '["apoc"]'           # Plugin APOC para queries avanzados
+    volumes:
+      - neo4j_data:/data                  # Los datos sobreviven al reinicio
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "lineage_password", "RETURN 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Servicio 2: Tu API (se agrega en Fase 3) ───────────────────────────────
+  # lineage-api:
+  #   build: .
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     neo4j:
+  #       condition: service_healthy
+
+# Volúmenes nombrados: Docker gestiona dónde se almacenan físicamente
+volumes:
+  neo4j_data:

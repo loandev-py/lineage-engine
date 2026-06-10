@@ -1,53 +1,48 @@
-[
-project
-]
-
+[project]
 name = "lineage-engine"
 version = "0.1.0"
-description = "real-time data lineage engine - portfolio project"
+description = "Real-Time Data Lineage Engine — portfolio project"
 requires-python = ">=3.11"
 
-# dependencias de produccion: lo que se necesita pa poder correr el project
+# Dependencias de producción: lo que necesita el proyecto para correr
 dependencies = [
-  "pydantic>=2.0",
-  "networkx>=3.0",
-  "structlog>=24.0",
+    "pydantic>=2.0",        # Modelos de datos con validación automática
+    "networkx>=3.0",        # Construcción y análisis del grafo de linaje
+    "structlog>=24.0",      # Logging estructurado (JSON en producción)
 ]
 
-[
-project.optiomnal-dependencies
-]
-# dependencias de desarrollo: solo para quien trabaja el codigo
-
+[project.optional-dependencies]
+# Dependencias de desarrollo: solo para quien trabaja en el código
 dev = [
-  "pytest>=8.0",
-  "pytest-cov>=5.0",
-  "ruff>=0.4",
-  "mypy>=1.0",
+    "pytest>=8.0",          # Framework de tests
+    "pytest-cov>=5.0",      # Cobertura de tests
+    "ruff>=0.4",            # Linter + formatter ultrarrápido (reemplaza flake8 + black)
+    "mypy>=1.0",            # Verificación de tipos estáticos
 ]
 
-[
-build-system
-]
+[build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[
-tool.ruff
-]
-select = ["E","F","I","UP"]
+# Configuración de ruff (linter)
+[tool.ruff]
+line-length = 88
+target-version = "py311"
 
-[
-tool.mypy
-]
-python_version + "3.11"
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]  # Errores, imports, upgrades
+
+# Configuración de mypy (tipos)
+[tool.mypy]
+python_version = "3.11"
 strict = true
 ignore_missing_imports = true
 
-[
-tool.pytest.ini_options
-]
+# Configuración de pytest
+[tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov+src/lineage-engine --cov-report=term-missing"
+addopts = "--cov=src/lineage_engine --cov-report=term-missing"
 
-
+# Configuración del paquete (layout src/)
+[tool.hatch.build.targets.wheel]
+packages = ["src/lineage_engine"]
