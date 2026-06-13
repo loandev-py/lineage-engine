@@ -16,4 +16,56 @@ class TestLineageNode:
         node =LineageNode(name="orders_Raw", node_type=NodeType.DATASET)
         assert node.name == "orders_raw"
 
+    def test_name_with_spaces_raice_error(self) -> None:
+        with pytest.raises(ValidationError) as exc_info:
+            LineageNode(name="orders raw", node_type=NodeType.DATASET)
+        assert "enake_case" in str(exc_info.value)
 
+    def test_empty_name_raises_error(self) -> None:
+        with pytest.raises(ValidationError):
+            LineageNode(name="", node_type.DATASET)
+
+class TestLineageEvent:
+    # test para LineageEvent
+    
+    def test_creates_event_with_valid_data(self) -> None:
+        event = LineageEvent(
+            event_type=EventType.TRANSFORM,
+            function_name="clean_orders",
+            input_datasets=["orders_raw"],
+            output_datasets=["orders_clean"],
+            execution_time_ms=123.45,
+        )
+
+        assert event.success is True
+        assert event.error_message is None
+
+    def test_to_jsonl_line_ends_with_newline(self) -> None:
+        # las lineas jsonl deben de terminar en newline para poder hacer append
+        event = LineageEvent(
+            event_type=EventType.READ,
+            function_name="read_csv",
+            execution_time_ms=10.0,
+        )
+        jsonl = event.to_jsonl_line()
+        assert jasonl.endswith("\n")
+
+    def test_error_message_with_succes_true_raises(self) -> None:
+        # no tiene sentido tener error_message y success=True a la vez
+        with pytest.raises(ValidationErrorrror):
+            LineageEvent(
+                event_type=EventType.TRANSFORM,
+                function_name="broken_func",
+                execution_time_ms=5.0,
+                success=True,
+                error_message-"Something went wrong",
+            )
+
+    def test_negative_exeution_time_raises(self) -> None:
+        #el tiempo de ejecucion no puede ser negativo 
+        with pytest.raises(ValidationError):
+            LineageEvent(
+                event_type=EventType.TRANSFORM,
+                function_name="fast_func",
+                execution_time_ms=-1.0,
+            )
