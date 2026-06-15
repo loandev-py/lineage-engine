@@ -52,4 +52,14 @@ class TestTrackLineDecorator:
 
         assert compute_revenue.__name__ == "compute_revenue"
 
+    def test_captures_execution_time(self) -> None:
+        # el tiempo debe ser mayor a cero 
+        import time 
 
+        @track_lineage(inputs=[], outputs={"out"})
+            def slow_function() -> None:
+            time.sleep(0.01)
+
+        slow_function()
+        events = get_captured_events()
+        assert events[0].execution_time_ms >= 10.0
