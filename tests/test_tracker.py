@@ -2,7 +2,11 @@
 
 import pytest
 
-from track_lineage.core.tracker import (clear_events, get_captured_events, track_lineage,)
+from track_lineage.core.tracker import (
+    clear_events,
+    get_captured_events,
+    track_lineage,
+)
 
 from track_lineage.models.lineage import EventType
 
@@ -28,7 +32,7 @@ class TestTrackLineDecorator:
         assert events[0].input_datasets == ["raw"]
         assert events[0].output_datasets == ["clean"]
 
-    def test-captures_failed_execution(self) -> None:
+    def test_captures_failed_execution(self) -> None:
         # el decorador captura el error y lo marca como fallido
         @track_lineage(inputs=["raw"], outputs=["clean"])
         def  failing_transform() -> None:
@@ -57,9 +61,22 @@ class TestTrackLineDecorator:
         import time 
 
         @track_lineage(inputs=[], outputs={"out"})
-            def slow_function() -> None:
+        def slow_function() -> None:
             time.sleep(0.01)
 
         slow_function()
         events = get_captured_events()
         assert events[0].execution_time_ms >= 10.0
+
+    def test_multiple_executions_captured(self) -> None:
+        # cada ejecucion genera un evento separado
+        
+        @track_lineage(inputs=["source"], outputs=["dest"])
+        def pipeline_step() -> str:
+            return "ok"
+
+        pipeline_step()
+        pipeline_step()
+        pipeline_step()
+
+        assert len(get_captured_events()) == 3

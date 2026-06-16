@@ -46,3 +46,9 @@ addopts = "--cov=src/lineage_engine --cov-report=term-missing"
 # Configuración del paquete (layout src/)
 [tool.hatch.build.targets.wheel]
 packages = ["src/lineage_engine"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
+]

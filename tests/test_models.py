@@ -1,7 +1,12 @@
 import pytest
 from pydantic import ValidationError
 
-from lineage_engine.models.lineage import (EventType, LineageEdge, LineageEvent, LineageNode, NodeType)
+from lineage_engine.models.lineage import (
+    EventType,
+    LineageEdge,
+    LineageEvent,
+    LineageNode,
+    NodeType)
 
 class TestLineageNode:
 
@@ -23,7 +28,7 @@ class TestLineageNode:
 
     def test_empty_name_raises_error(self) -> None:
         with pytest.raises(ValidationError):
-            LineageNode(name="", node_type.DATASET)
+            LineageNode(name="", node_type=NodeType.DATASET)
 
 class TestLineageEvent:
     # test para LineageEvent
@@ -58,7 +63,7 @@ class TestLineageEvent:
                 function_name="broken_func",
                 execution_time_ms=5.0,
                 success=True,
-                error_message-"Something went wrong",
+                error_message="Somuething went wrong",
             )
 
     def test_negative_exeution_time_raises(self) -> None:
